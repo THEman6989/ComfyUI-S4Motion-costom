@@ -34,6 +34,7 @@ from .py.videoCrop import VideoCropNode
 from .py.videoFrames import VideoFramesNode
 from .py.videoCombine import VideoCombineNode
 from .py.videoInfo import VideoInfoNode
+from .py.videoResize import VideoResizeNode
 import os
 
 NODE_CLASS_MAPPINGS = {
@@ -50,6 +51,7 @@ NODE_CLASS_MAPPINGS = {
     "💀Video Frames": VideoFramesNode,
     "💀Video Combine": VideoCombineNode,
     "💀Video Info": VideoInfoNode,
+    "💀Video Resize": VideoResizeNode,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -66,4 +68,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "💀Video Frames": "💀Video Frames",
     "💀Video Combine": "💀Video Combine",
     "💀Video Info": "💀Video Info",
+    "💀Video Resize": "💀Video Resize",
 }

@@ -21,6 +21,7 @@ class MotionConfigNode:
                 "fps": ("INT", {"default": 15, "min": 1, "max": 60, "step": 1}),
                 "loop": ("BOOLEAN", {"default": False}),
                 "format": (["webp", "apng"], {"default": "webp"}),
+                "preserve_alpha": ("BOOLEAN", {"default": False}),
                 "rotation": ("FLOAT", {"default": 0.0, "min": -360.0, "max": 360.0, "step": 1.0}),
                 "position_x": ("FLOAT", {"default": 0.0, "min": -4096, "max": 4096, "step": 1}),
                 "position_y": ("FLOAT", {"default": 0.0, "min": -4096, "max": 4096, "step": 1}),
@@ -45,7 +46,7 @@ class MotionConfigNode:
     def IS_CHANGED(cls, **kwargs):
         return True
 
-    def process(self, layer_image, background_image, time=2.0, fps=15, loop=False, format="webp", 
+    def process(self, layer_image, background_image, time=2.0, fps=15, loop=False, format="webp", preserve_alpha=False,
                 rotation=0.0, position_x=0.0, position_y=0.0, scale=1.0, opacity=1.0,
                 rotation_effector=None, position_effector=None, scale_effector=None, opacity_effector=None,
                 distortion_effector=None, mask_effector=None, shake_effector=None):
@@ -266,8 +267,8 @@ class MotionConfigNode:
         print(f"[Motion Config] Animation saved to: {output_path}")
         
         # Convert frames to ComfyUI format for output
-        print(f"[Motion Config] Converting frames to output format...")
-        frame_sequence = self._frames_to_comfyui_format(frames)
+        print(f"[Motion Config] Converting frames to output format (preserve_alpha={preserve_alpha})...")
+        frame_sequence = self._frames_to_comfyui_format(frames, preserve_alpha=preserve_alpha)
         print(f"[Motion Config] Animation generation completed successfully!")
         
         return (output_path, frame_sequence)
@@ -335,28 +336,108 @@ class MotionConfigNode:
         
         return Image.fromarray(arr)
 
-    def _frames_to_comfyui_format(self, frames):
-        """Convert PIL frames to ComfyUI format (torch tensor with batch dimension)"""
+    def _frames_to_comfyui_format(self, frames, preserve_alpha=False):
+        """Convert PIL frames to ComfyUI format (torch tensor with batch dimension)
+        
+        Args:
+            frames: List of PIL Images
+            preserve_alpha: If True, preserve RGBA channels; if False, convert to RGB
+        """
         import torch
         
+        if not frames:
+            return torch.tensor([])
+        
         frame_arrays = []
-        for frame in frames:
-            # Convert PIL to numpy array
-            arr = np.array(frame)
-            # Add batch dimension if needed
-            if arr.ndim == 3:
-                arr = arr[None, ...]
-            # Convert to float32 [0,1] range
-            if arr.dtype == np.uint8:
-                arr = arr.astype(np.float32) / 255.0
-            frame_arrays.append(arr)
+        for i, frame in enumerate(frames):
+            try:
+                # Convert PIL to numpy array
+                arr = np.array(frame)
+                
+                # Debug: print array shape for the first frame
+                if i == 0:
+                    print(f"[Motion Config] Frame {i} original shape: {arr.shape}")
+                
+                # Ensure we have the right shape: (height, width, channels)
+                if arr.ndim != 3:
+                    raise Exception(f"Expected 3D array, got {arr.ndim}D array with shape {arr.shape}")
+                
+                # Handle channels based on preserve_alpha setting
+                if preserve_alpha:
+                    # Preserve alpha channel if present, add if missing
+                    if arr.shape[2] == 3:  # RGB -> RGBA
+                        # Add opaque alpha channel
+                        alpha = np.ones((arr.shape[0], arr.shape[1], 1), dtype=arr.dtype)
+                        if arr.dtype == np.uint8:
+                            alpha = alpha * 255
+                        arr = np.concatenate([arr, alpha], axis=2)
+                    elif arr.shape[2] == 4:  # RGBA
+                        # Keep as is
+                        pass
+                    else:
+                        raise Exception(f"Unexpected channel count: {arr.shape[2]}, expected 3 (RGB) or 4 (RGBA)")
+                else:
+                    # Convert to RGB (default behavior for compatibility)
+                    if arr.shape[2] == 4:  # RGBA -> RGB
+                        # Convert RGBA to RGB by compositing over white background
+                        alpha = arr[:, :, 3:4] / 255.0 if arr.dtype == np.uint8 else arr[:, :, 3:4]
+                        rgb = arr[:, :, :3]
+                        if arr.dtype == np.uint8:
+                            rgb = rgb.astype(np.float32) / 255.0
+                            alpha = alpha.astype(np.float32)
+                        # Composite over white background
+                        arr = rgb * alpha + (1 - alpha)
+                        # Convert back to uint8 if original was uint8
+                        if np.array(frame).dtype == np.uint8:
+                            arr = (arr * 255).clip(0, 255).astype(np.uint8)
+                    elif arr.shape[2] == 3:  # RGB
+                        # Keep as is
+                        pass
+                    else:
+                        raise Exception(f"Unexpected channel count: {arr.shape[2]}, expected 3 (RGB) or 4 (RGBA)")
+                
+                # Convert to float32 [0,1] range
+                if arr.dtype == np.uint8:
+                    arr = arr.astype(np.float32) / 255.0
+                elif arr.dtype not in [np.float32, np.float64]:
+                    arr = arr.astype(np.float32)
+                
+                # Ensure values are in [0,1] range
+                arr = np.clip(arr, 0.0, 1.0)
+                
+                # ComfyUI uses BHWC format (batch, height, width, channels)
+                # Our array is already in HWC format, which is what we want
+                
+                # Debug: print final shape for the first frame
+                if i == 0:
+                    print(f"[Motion Config] Frame {i} final shape (HWC format): {arr.shape}")
+                
+                frame_arrays.append(arr)
+                
+            except Exception as e:
+                print(f"[Motion Config] Error processing frame {i}: {e}")
+                print(f"[Motion Config] Frame {i} shape: {np.array(frame).shape}")
+                raise
         
         # Stack all frames and convert to torch tensor
-        if frame_arrays:
-            stacked = np.concatenate(frame_arrays, axis=0)
-            return torch.from_numpy(stacked)
-        else:
-            return torch.tensor([])
+        try:
+            # Stack frames along the first dimension: (num_frames, height, width, channels)
+            stacked = np.stack(frame_arrays, axis=0)  # BHWC format
+            print(f"[Motion Config] Final stacked shape (BHWC): {stacked.shape}")
+            
+            # Convert to torch tensor
+            result = torch.from_numpy(stacked)
+            print(f"[Motion Config] Final torch tensor shape: {result.shape}")
+            
+            return result
+            
+        except Exception as e:
+            print(f"[Motion Config] Error stacking frames: {e}")
+            print(f"[Motion Config] Number of frames: {len(frame_arrays)}")
+            if frame_arrays:
+                print(f"[Motion Config] First frame shape: {frame_arrays[0].shape}")
+                print(f"[Motion Config] Last frame shape: {frame_arrays[-1].shape}")
+            raise
 
     def compose_frame(self, layer_img, bg_img, rotation, scale, x, y, opacity, center_align=False, mask_spec=None, mask_source=None):
         frame = bg_img.copy().convert("RGBA")
