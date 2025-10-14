@@ -1,8 +1,8 @@
 # ComfyUI-S4Motion
 
-**Version: 1.4.0**
+**Version: 1.5.0**
 
-A comprehensive motion animation toolkit for ComfyUI, providing 13 professional-grade motion control nodes for creating dynamic animations with production-ready quality and reliability.
+A comprehensive motion animation toolkit for ComfyUI, providing 14 professional-grade motion control nodes for creating dynamic animations with production-ready quality and reliability.
 
 ## 🚀 Features
 
@@ -24,6 +24,7 @@ A comprehensive motion animation toolkit for ComfyUI, providing 13 professional-
 - **💀Video Frames** - Advanced frame extraction and processing
 - **💀Video Combine** - Concatenate two videos or image sequences in time sequence
 - **💀Video Info** - Analyze video or image sequence properties (dimensions, frame count, duration, FPS)
+- **💀Video Resize** - Professional video and image sequence resizing with multiple scaling options
 
 ## 📦 Installation
 
@@ -89,31 +90,6 @@ All dependencies are automatically validated at startup with production-quality 
 - ✅ **Video Support** - Comprehensive video processing and frame control
 - ✅ **Path Animation** - Complex trajectory support for sophisticated motion
 
-## 📁 Project Structure
-
-```
-ComfyUI-S4Motion/
-├── py/                    # Core node implementations
-│   ├── motionConfig.py    # Central motion configuration
-│   ├── motionPosition.py  # Position animation control
-│   ├── motionRotation.py  # Rotation effects
-│   ├── motionScale.py     # Scaling animations
-│   ├── motionOpacity.py   # Opacity/alpha control
-│   ├── motionPositionOnPath.py # Path-based motion
-│   ├── motionDistortion.py # Distortion effects
-│   ├── motionShake.py     # Shake/vibration effects
-│   ├── motionMask.py      # Animated masking
-│   ├── videoCrop.py       # Video cropping
-│   ├── videoFrames.py     # Frame processing
-│   ├── videoCombine.py    # Video combination
-│   └── videoInfo.py       # Video analysis
-├── examples/              # Usage examples and workflows
-├── summary_md/            # Development summaries and notes
-├── __init__.py           # Plugin initialization
-├── dependency_manager.py  # Dependency management
-└── requirements.txt      # Python dependencies
-```
-
 ## 🎨 Motion Curves
 
 S4Motion supports professional easing functions:
@@ -144,4 +120,4 @@ This project is open source. Please respect the licensing terms.
 
 **Author:** S4MUEL  
 **Website:** [s4muel.com](https://s4muel.com)  
-**Version:** 1.4.0
+**Version:** 1.5.0

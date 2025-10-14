@@ -1,8 +1,8 @@
 # ComfyUI-S4Motion
 
-**版本：1.4.0**
+**版本：1.5.0**
 
-ComfyUI 的綜合動態動畫工具包，提供 13 個專業級動態控制節點，用於創建具有生產品質和可靠性的動態動畫。
+ComfyUI 的綜合動態動畫工具包，提供 14 個專業級動態控制節點，用於創建具有生產品質和可靠性的動態動畫。
 
 ## 🚀 功能特色
 
@@ -24,6 +24,7 @@ ComfyUI 的綜合動態動畫工具包，提供 13 個專業級動態控制節�
 - **💀Video Frames** - 進階幀提取和處理
 - **💀Video Combine** - 在時間上連接兩個視頻或圖像序列
 - **💀Video Info** - 分析視頻或圖像序列屬性（尺寸、幀數、時長、FPS）
+- **💀Video Resize** - 專業視頻和圖像序列尺寸調整，多種縮放選項
 
 ## 📦 安裝
 
@@ -89,30 +90,6 @@ ComfyUI 的綜合動態動畫工具包，提供 13 個專業級動態控制節�
 - ✅ **視頻支援** - 全面的視頻處理和幀控制
 - ✅ **路徑動畫** - 支援精密動態的複雜軌跡
 
-## 📁 專案結構
-
-```
-ComfyUI-S4Motion/
-├── py/                    # 核心節點實現
-│   ├── motionConfig.py    # 中央動態配置
-│   ├── motionPosition.py  # 位置動畫控制
-│   ├── motionRotation.py  # 旋轉效果
-│   ├── motionScale.py     # 縮放動畫
-│   ├── motionOpacity.py   # 透明度/alpha 控制
-│   ├── motionPositionOnPath.py # 基於路徑的動態
-│   ├── motionDistortion.py # 變形效果
-│   ├── motionShake.py     # 震動/振動效果
-│   ├── motionMask.py      # 動畫遮罩
-│   ├── videoCrop.py       # 視頻裁切
-│   ├── videoFrames.py     # 幀處理
-│   ├── videoCombine.py    # 視頻組合
-│   └── videoInfo.py       # 視頻分析
-├── examples/              # 使用範例和工作流程
-├── summary_md/            # 開發摘要和筆記
-├── __init__.py           # 插件初始化
-├── dependency_manager.py  # 依賴管理
-└── requirements.txt      # Python 依賴項
-```
 
 ## 🎨 動態曲線
 
@@ -144,4 +121,4 @@ S4Motion 支援專業緩動函數：
 
 **作者：** S4MUEL  
 **網站：** [s4muel.com](https://s4muel.com)  
-**版本：** 1.4.0
+**版本：** 1.5.0

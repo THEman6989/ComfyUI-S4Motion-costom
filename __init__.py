@@ -1,4 +1,4 @@
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 
 # Import dependency manager first
 from .dependency_manager import check_startup_dependencies, S4MotionLogger

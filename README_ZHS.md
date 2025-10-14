@@ -1,8 +1,8 @@
 # ComfyUI-S4Motion
 
-**版本：1.4.0**
+**版本：1.5.0**
 
-ComfyUI 的综合动态动画工具包，提供 12 个专业级动态控制节点，用于创建具有生产品质和可靠性的动态动画。
+ComfyUI 的综合动态动画工具包，提供 14 个专业级动态控制节点，用于创建具有生产品质和可靠性的动态动画。
 
 ## 🚀 功能特色
 
@@ -23,6 +23,8 @@ ComfyUI 的综合动态动画工具包，提供 12 个专业级动态控制节�
 - **💀Video Crop** - 支持动画的精确视频裁剪
 - **💀Video Frames** - 高级帧提取和处理
 - **💀Video Combine** - 在时间上连接两个视频或图像序列
+- **💀Video Info** - 分析视频或图像序列属性（尺寸、帧数、时长、FPS）
+- **💀Video Resize** - 专业视频和图像序列尺寸调整，多种缩放选项
 
 ## 📦 安装
 
@@ -88,29 +90,6 @@ ComfyUI 的综合动态动画工具包，提供 12 个专业级动态控制节�
 - ✅ **视频支持** - 全面的视频处理和帧控制
 - ✅ **路径动画** - 支持精密动态的复杂轨迹
 
-## 📁 项目结构
-
-```
-ComfyUI-S4Motion/
-├── py/                    # 核心节点实现
-│   ├── motionConfig.py    # 中央动态配置
-│   ├── motionPosition.py  # 位置动画控制
-│   ├── motionRotation.py  # 旋转效果
-│   ├── motionScale.py     # 缩放动画
-│   ├── motionOpacity.py   # 透明度/alpha 控制
-│   ├── motionPositionOnPath.py # 基于路径的动态
-│   ├── motionDistortion.py # 变形效果
-│   ├── motionShake.py     # 震动/振动效果
-│   ├── motionMask.py      # 动画遮罩
-│   ├── videoCrop.py       # 视频裁剪
-│   ├── videoFrames.py     # 帧处理
-│   └── videoCombine.py    # 视频组合
-├── examples/              # 使用示例和工作流程
-├── summary_md/            # 开发摘要和笔记
-├── __init__.py           # 插件初始化
-├── dependency_manager.py  # 依赖管理
-└── requirements.txt      # Python 依赖项
-```
 
 ## 🎨 动态曲线
 
@@ -142,4 +121,4 @@ S4Motion 支持专业缓动函数：
 
 **作者：** S4MUEL  
 **网站：** [s4muel.com](https://s4muel.com)  
-**版本：** 1.4.0
+**版本：** 1.5.0
